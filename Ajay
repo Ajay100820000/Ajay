@@ -1,0 +1,45 @@
+import tkinter as tk
+from tkinter import messagebox
+
+questions = [
+    {"q": "Capital of France?", "a": "Paris", "o": ["Berlin", "Paris", "London", "Madrid"]},
+    {"q": "5 + 7 = ?", "a": "12", "o": ["10", "12", "14", "16"]},
+    {"q": "Python is a?", "a": "Programming Language", "o": ["Snake", "Drink", "Car", "Programming Language"]}
+]
+
+current = 0
+score = 0
+
+def load_question():
+    q = questions[current]
+    question_label.config(text=q["q"])
+    for i, option in enumerate(q["o"]):
+        var[i].set(option)
+
+def next_question():
+    global current, score
+    selected = [v.get() for v in var if v.get()]
+    if selected and selected[0] == questions[current]["a"]:
+        score += 1
+    current += 1
+    if current < len(questions):
+        load_question()
+    else:
+        messagebox.showinfo("Quiz Completed", f"Your score: {score}/{len(questions)}")
+        root.destroy()
+
+root = tk.Tk()
+root.title("Quiz App")
+
+question_label = tk.Label(root, text="", font=("Arial", 16))
+question_label.pack(pady=20)
+
+var = [tk.StringVar() for _ in range(4)]
+for v in var:
+    tk.Radiobutton(root, variable=v, value="", textvariable=v, font=("Arial", 14)).pack(anchor="w")
+
+tk.Button(root, text="Next", command=next_question).pack(pady=20)
+
+load_question()
+root.mainloop()
+
